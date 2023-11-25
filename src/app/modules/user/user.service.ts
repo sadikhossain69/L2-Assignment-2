@@ -130,3 +130,27 @@ export async function addOrder(
     return updatedUser;
   }
 }
+
+/**
+ * The function `getOrders` retrieves the orders for a given user ID, after checking if the user
+ * exists.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * a user.
+ * @returns a Promise that resolves to an array of TOrders objects or null.
+ */
+export async function getOrders(
+  userId: string,
+): Promise<TOrders[] | null> {
+  // Convert the userId to number
+  const userIdNumber = Number(userId);
+
+  // Check if the user exists with static method
+  const existingUser = await User.isUserExist(userIdNumber);
+
+  if (!existingUser) {
+    throw new Error('User does not exist!');
+  } else {
+    const user = await User.findOne({ userId: userId });
+    return user?.orders || null;
+  }
+}

@@ -3,6 +3,7 @@ import {
     addOrders,
     createUsers,
     deleteSingleUser,
+    getOrdersOfUsers,
     getUsersController,
     updateAUser,
     userByIdController
@@ -16,5 +17,6 @@ router.get('/:userId', userByIdController)
 router.put('/:userId', updateAUser)
 router.delete('/:userId', deleteSingleUser)
 router.put('/:userId/orders', addOrders)
+router.get('/:userId/orders', getOrdersOfUsers)
 
 export const UserRoutes = router

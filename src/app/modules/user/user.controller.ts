@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { validateUser } from "./user.validation";
-import { addOrder, createUser, deleteUser, getAllUsers, getUserById, updateUser } from "./user.service";
+import { addOrder, createUser, deleteUser, getAllUsers, getOrders, getUserById, updateUser } from "./user.service";
 
 /**
  * The function `createUsers` is an asynchronous function that creates a new user, validates the user
@@ -239,3 +239,36 @@ export const addOrders = async (
         });
     }
 };
+
+/* The `getOrdersOfUsers` function is an asynchronous function that handles a request to fetch the
+orders of a specific user. It takes in two parameters: `req` and `res`, which represent the HTTP
+request and response objects, respectively. */
+export const getOrdersOfUsers = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      // Get the user id from the request params
+      const { userId } = req.params;
+  
+      // Get the orders of the user using the service function
+      const orders = await getOrders(userId);
+  
+      // Send the response
+      res.status(200).json({
+        success: true,
+        message: 'Orders fetched successfully!',
+        data: { orders },
+      });
+    } catch (error: any) {
+      // Handle errors, send an appropriate response
+      res.status(400).json({
+        success: false,
+        message: 'Failed to fetch orders!',
+        error: {
+          code: 400,
+          description: error.message,
+        },
+      });
+    }
+  };
