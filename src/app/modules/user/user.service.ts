@@ -22,3 +22,27 @@ export async function getAllUsers(): Promise<IUser[]> {
     const users = await User.find();
     return users;
 }
+
+/**
+ * The function `getUserById` retrieves a user by their ID, converts the ID to a number, checks if the
+ * user exists, and returns the user if they exist.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier of
+ * a user.
+ * @returns a Promise that resolves to either an IUser object or null.
+ */
+export async function getUserById(
+    userId: string,
+): Promise<IUser | null> {
+    // Convert the userId to number
+    const userIdNumber = Number(userId);
+
+    // Check if the user exists with static method
+    const existingUser = await User.isUserExist(userIdNumber);
+
+    if (!existingUser) {
+        throw new Error('User does not exist!');
+    } else {
+        const user = await User.findOne({ userId: userId }).select('-orders');
+        return user;
+    }
+}

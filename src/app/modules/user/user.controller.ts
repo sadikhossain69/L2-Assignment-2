@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { validateUser } from "./user.validation";
-import { createUser, getAllUsers } from "./user.service";
+import { createUser, getAllUsers, getUserById } from "./user.service";
 
 /**
  * The function `createUsers` is an asynchronous function that creates a new user, validates the user
@@ -79,6 +79,45 @@ export const getUsersController = async (
         res.status(400).json({
             success: false,
             message: 'Failed to fetch users!',
+            error: {
+                code: 400,
+                description: error.message,
+            },
+        });
+    }
+};
+
+/**
+ * This is a TypeScript controller function that fetches a user by their ID and sends a response with
+ * the user data.
+ * @param {Request} req - The `req` parameter is an object that represents the HTTP request made to the
+ * server. It contains information such as the request headers, request body, request method, request
+ * URL, and request parameters.
+ * @param {Response} res - The `res` parameter is the response object that is used to send the HTTP
+ * response back to the client. It is an instance of the `Response` class from the Express framework.
+ */
+export const userByIdController = async (
+    req: Request,
+    res: Response,
+): Promise<void> => {
+    try {
+        // Get the user id from the request params
+        const { userId } = req.params;
+
+        // Get the user using the service function
+        const user = await getUserById(userId);
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            message: 'User fetched successfully!',
+            data: user,
+        });
+    } catch (error: any) {
+        // Handle errors, send an appropriate response
+        res.status(400).json({
+            success: false,
+            message: 'Failed to fetch user!',
             error: {
                 code: 400,
                 description: error.message,
