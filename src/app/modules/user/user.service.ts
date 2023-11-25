@@ -154,3 +154,23 @@ export async function getOrders(
     return user?.orders || null;
   }
 }
+
+export async function calculateTotalPrice(
+  userId: string,
+): Promise<number> {
+  // Convert the userId to number
+  const userIdNumber = Number(userId);
+
+  // Check if the user exists with static method
+  const existingUser = await User.isUserExist(userIdNumber);
+
+  if (!existingUser) {
+    throw new Error('User does not exist!');
+  } else {
+    const user = await User.findOne({ userId: userId });
+    const totalPrice = user?.orders?.reduce((acc, order) => {
+      return acc + order.price * order.quantity;
+    }, 0);
+    return totalPrice || 0;
+  }
+}

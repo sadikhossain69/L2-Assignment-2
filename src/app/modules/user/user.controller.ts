@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { validateUser } from "./user.validation";
-import { addOrder, createUser, deleteUser, getAllUsers, getOrders, getUserById, updateUser } from "./user.service";
+import { addOrder, calculateTotalPrice, createUser, deleteUser, getAllUsers, getOrders, getUserById, updateUser } from "./user.service";
 
 /**
  * The function `createUsers` is an asynchronous function that creates a new user, validates the user
@@ -246,29 +246,70 @@ request and response objects, respectively. */
 export const getOrdersOfUsers = async (
     req: Request,
     res: Response,
-  ): Promise<void> => {
+): Promise<void> => {
     try {
-      // Get the user id from the request params
-      const { userId } = req.params;
-  
-      // Get the orders of the user using the service function
-      const orders = await getOrders(userId);
-  
-      // Send the response
-      res.status(200).json({
-        success: true,
-        message: 'Orders fetched successfully!',
-        data: { orders },
-      });
+        // Get the user id from the request params
+        const { userId } = req.params;
+
+        // Get the orders of the user using the service function
+        const orders = await getOrders(userId);
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            message: 'Orders fetched successfully!',
+            data: { orders },
+        });
     } catch (error: any) {
-      // Handle errors, send an appropriate response
-      res.status(400).json({
-        success: false,
-        message: 'Failed to fetch orders!',
-        error: {
-          code: 400,
-          description: error.message,
-        },
-      });
+        // Handle errors, send an appropriate response
+        res.status(400).json({
+            success: false,
+            message: 'Failed to fetch orders!',
+            error: {
+                code: 400,
+                description: error.message,
+            },
+        });
     }
-  };
+};
+
+/**
+ * The `calculatePrice` function calculates the total price of orders for a given user and sends a
+ * response with the calculated total price.
+ * @param {Request} req - The `req` parameter is an object that represents the HTTP request made to
+ * the server. It contains information such as the request method, headers, query parameters, request
+ * body, and more.
+ * @param {Response} res - The `res` parameter is the response object that is used to send the HTTP
+ * response back to the client. It is an instance of the `Response` class from the Express framework.
+ */
+export const calculatePrice = async (
+    req: Request,
+    res: Response,
+): Promise<void> => {
+    try {
+        // Get the user id from the request params
+        const { userId } = req.params;
+
+        // Get the orders of the user using the service function
+        const totalPrice = await calculateTotalPrice(userId);
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            message: 'Total price calculated successfully!',
+            data: {
+                totalPrice: totalPrice.toFixed(2),
+            },
+        });
+    } catch (error: any) {
+        // Handle errors, send an appropriate response
+        res.status(400).json({
+            success: false,
+            message: 'Failed to calculate total price!',
+            error: {
+                code: 400,
+                description: error.message,
+            },
+        });
+    }
+};
