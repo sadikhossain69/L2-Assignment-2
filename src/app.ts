@@ -12,7 +12,7 @@ app.use(cors());
 app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  const a = 10;
+  const a = "Amader API endpoint e apnake sagotom";
 
   res.json({
     a,

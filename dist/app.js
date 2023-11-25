@@ -13,7 +13,7 @@ app.use((0, cors_1.default)());
 // Routes
 app.use('/api/users', user_router_1.UserRoutes);
 app.get('/', (req, res) => {
-    const a = 10;
+    const a = "Amader API endpoint e apnake sagotom";
     res.json({
         a,
     });
