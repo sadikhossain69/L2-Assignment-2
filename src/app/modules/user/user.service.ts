@@ -1,4 +1,4 @@
-import { IUser } from "./user.interface";
+import { IUser, TOrders } from "./user.interface";
 import { User } from "./user.model";
 
 /**
@@ -96,5 +96,37 @@ export async function deleteUser(userId: string): Promise<IUser | null> {
   } else {
     const deletedUser = await User.findOneAndDelete({ userId: userId });
     return deletedUser;
+  }
+}
+
+/**
+ * The addOrder function adds an order to a user's list of orders if the user exists.
+ * @param {string} userId - The userId parameter is a string that represents the unique identifier of a
+ * user. It is used to identify the user for whom the order is being added.
+ * @param {TOrders} orderData - The `orderData` parameter is of type `TOrders`, which represents the
+ * data for the order. It could be an object with properties such as `orderId`, `orderDate`,
+ * `orderItems`, etc. The specific structure of `TOrders` would depend on the requirements of your
+ * application.
+ * @returns a Promise that resolves to either an IUser object or null.
+ */
+export async function addOrder(
+  userId: string,
+  orderData: TOrders,
+): Promise<IUser | null> {
+  // Convert the userId to number
+  const userIdNumber = Number(userId);
+
+  // Check if the user exists with static method
+  const existingUser = await User.isUserExist(userIdNumber);
+
+  if (!existingUser) {
+    throw new Error('User does not exist!');
+  } else {
+    const updatedUser = await User.findOneAndUpdate(
+      { userId: userId },
+      { $push: { orders: orderData } },
+      { new: true },
+    );
+    return updatedUser;
   }
 }

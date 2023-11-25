@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { validateUser } from "./user.validation";
-import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from "./user.service";
+import { addOrder, createUser, deleteUser, getAllUsers, getUserById, updateUser } from "./user.service";
 
 /**
  * The function `createUsers` is an asynchronous function that creates a new user, validates the user
@@ -190,6 +190,48 @@ export const deleteSingleUser = async (
         res.status(400).json({
             success: false,
             message: 'Failed to fetch user!',
+            error: {
+                code: 400,
+                description: error.message,
+            },
+        });
+    }
+};
+
+/**
+ * The `addOrders` function is an asynchronous function that adds an order to a user and sends a
+ * response indicating success or failure.
+ * @param {Request} req - The `req` parameter is an object that represents the HTTP request made to the
+ * server. It contains information such as the request headers, request body, request method, request
+ * URL, and request parameters.
+ * @param {Response} res - The `res` parameter is the response object that is used to send the response
+ * back to the client. It is an instance of the `Response` class from the Express framework.
+ */
+export const addOrders = async (
+    req: Request,
+    res: Response,
+): Promise<void> => {
+    try {
+        // Get the user id from the request params
+        const { userId } = req.params;
+
+        // Get the order data from the request body
+        const orderData = req.body;
+
+        // Add the order to the user using the service function
+        await addOrder(userId, orderData);
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            message: 'Order added successfully!',
+            data: null,
+        });
+    } catch (error: any) {
+        // Handle errors, send an appropriate response
+        res.status(400).json({
+            success: false,
+            message: 'Failed to add order!',
             error: {
                 code: 400,
                 description: error.message,
