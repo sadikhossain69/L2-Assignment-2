@@ -1,5 +1,5 @@
-import { IUser, TOrders } from "./user.interface";
-import { User } from "./user.model";
+import { IUser, TOrders } from './user.interface';
+import { User } from './user.model';
 
 /**
  * The function creates a new user using the provided user data and returns the created user.
@@ -9,8 +9,8 @@ import { User } from "./user.model";
  */
 export async function createUser(userData: IUser) {
   // Create the user using the mongoose model if the user does not exist
-  const newUser = await User.create(userData)
-  return newUser
+  const newUser = await User.create(userData);
+  return newUser;
 }
 
 /**
@@ -30,9 +30,7 @@ export async function getAllUsers(): Promise<IUser[]> {
  * a user.
  * @returns a Promise that resolves to either an IUser object or null.
  */
-export async function getUserById(
-  userId: string,
-): Promise<IUser | null> {
+export async function getUserById(userId: string): Promise<IUser | null> {
   // Convert the userId to number
   const userIdNumber = Number(userId);
 
@@ -138,9 +136,7 @@ export async function addOrder(
  * a user.
  * @returns a Promise that resolves to an array of TOrders objects or null.
  */
-export async function getOrders(
-  userId: string,
-): Promise<TOrders[] | null> {
+export async function getOrders(userId: string): Promise<TOrders[] | null> {
   // Convert the userId to number
   const userIdNumber = Number(userId);
 
@@ -155,9 +151,7 @@ export async function getOrders(
   }
 }
 
-export async function calculateTotalPrice(
-  userId: string,
-): Promise<number> {
+export async function calculateTotalPrice(userId: string): Promise<number> {
   // Convert the userId to number
   const userIdNumber = Number(userId);
 

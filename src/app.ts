@@ -9,13 +9,13 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use('/api/users', UserRoutes)
+app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   const a = 10;
 
   res.json({
-    a
+    a,
   });
 });
 
