@@ -46,3 +46,33 @@ export async function getUserById(
         return user;
     }
 }
+
+/**
+ * The updateUser function updates a user's data if the user exists, otherwise it throws an error.
+ * @param {string} userId - The userId parameter is a string that represents the unique identifier of
+ * the user.
+ * @param {IUser} userData - The `userData` parameter is an object that represents the updated user
+ * data. It should have properties that match the fields of the `IUser` interface.
+ * @returns a Promise that resolves to either an IUser object or null.
+ */
+export async function updateUser(
+    userId: string,
+    userData: IUser,
+  ): Promise<IUser | null> {
+    // Convert the userId to number
+    const userIdNumber = Number(userId);
+  
+    // Check if the user exists with static method
+    const existingUser = await User.isUserExist(userIdNumber);
+  
+    if (!existingUser) {
+      throw new Error('User does not exist!');
+    } else {
+      const updatedUser = await User.findOneAndUpdate(
+        { userId: userId },
+        userData,
+        { new: true },
+      );
+      return updatedUser;
+    }
+  }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { validateUser } from "./user.validation";
-import { createUser, getAllUsers, getUserById } from "./user.service";
+import { createUser, getAllUsers, getUserById, updateUser } from "./user.service";
 
 /**
  * The function `createUsers` is an asynchronous function that creates a new user, validates the user
@@ -125,3 +125,42 @@ export const userByIdController = async (
         });
     }
 };
+
+/* The `updateAUser` function is an asynchronous function that handles a request to update a user's
+data. It takes in two parameters: `req` and `res`, which represent the HTTP request and response
+objects, respectively. */
+export const updateAUser = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      // Get the user id from the request params
+      const { userId } = req.params;
+  
+      // Get the user data from the request body
+      const userData = req.body;
+  
+      // Validate the incoming user data
+      const validatedUser = validateUser(userData);
+  
+      // Update the user using the service function
+      const updatedUser = await updateUser(userId, validatedUser);
+  
+      // Send the response
+      res.status(200).json({
+        success: true,
+        message: 'User updated successfully!',
+        data: updatedUser,
+      });
+    } catch (error: any) {
+      // Handle errors, send an appropriate response
+      res.status(400).json({
+        success: false,
+        message: 'Failed to fetch user!',
+        error: {
+          code: 400,
+          description: error.message,
+        },
+      });
+    }
+  };
