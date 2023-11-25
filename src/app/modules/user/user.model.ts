@@ -139,4 +139,15 @@ userSchema.pre<IUser>("save", async function(next) {
     next()
 })
 
+userSchema.post('save', async function (doc, next) {
+    const user = await User.findOne(doc._id).select('-password -orders');
+    if (user) {
+      Object.assign(doc, user);
+    }
+    next();
+  });
+  
+
+/* `export const User = model<IUser, UserModel>("User", userSchema)` is exporting a Mongoose model
+named "User" based on the `userSchema` schema. */
 export const User = model<IUser, UserModel>("User", userSchema)
