@@ -50,7 +50,7 @@ const userOrdersSchema: Schema<TOrders> = new Schema({
         type: String,
         required: true
     },
-    
+
     price: {
         type: Number,
         required: true
@@ -127,7 +127,7 @@ const userSchema: Schema<IUser> = new Schema({
 The code `userSchema.pre<IUser>("save", async function(next) { ... })` is a pre-save middleware
 function in Mongoose. It is executed before saving a user document to the database. 
 */
-userSchema.pre<IUser>("save", async function(next) {
+userSchema.pre<IUser>("save", async function (next) {
     const user = this
 
     // making password hash
@@ -139,14 +139,52 @@ userSchema.pre<IUser>("save", async function(next) {
     next()
 })
 
+/* 
+The code `userSchema.post('save', async function (doc, next) { ... })` is a post-save middleware
+function in Mongoose. It is executed after saving a user document to the database. 
+*/
 userSchema.post('save', async function (doc, next) {
     const user = await User.findOne(doc._id).select('-password -orders');
     if (user) {
-      Object.assign(doc, user);
+        Object.assign(doc, user);
     }
     next();
-  });
-  
+});
+
+/* 
+The code `userSchema.post('find', async function (docs: IUser[], next) { ... })` is a post-find
+middleware function in Mongoose. It is executed after a find operation is performed on the User
+model. 
+*/
+userSchema.post('find', async function (docs: IUser[], next) {
+    //   Making orders field empty
+    docs.forEach((doc) => {
+        doc.orders = undefined;
+    });
+
+    next();
+});
+
+/* 
+The code `userSchema.post('findOneAndUpdate', async function (doc: IUser, next) { ... })` is a
+post-findOneAndUpdate middleware function in Mongoose. It is executed after a findOneAndUpdate
+operation is performed on the User model. 
+*/
+userSchema.post('findOneAndUpdate', async function (doc: IUser, next) {
+    //   Making orders field undefined
+    doc.orders = undefined;
+
+    next();
+});
+
+// Custom static method for the user schema
+userSchema.statics.isUserExist = async function (
+    userId: number,
+): Promise<IUser | null> {
+    const user = await this.findOne({ userId: userId });
+    return user;
+};
+
 
 /* `export const User = model<IUser, UserModel>("User", userSchema)` is exporting a Mongoose model
 named "User" based on the `userSchema` schema. */
