@@ -8,9 +8,9 @@ import { User } from "./user.model";
  * @returns the newly created user object.
  */
 export async function createUser(userData: IUser) {
-    // Create the user using the mongoose model if the user does not exist
-    const newUser = await User.create(userData)
-    return newUser
+  // Create the user using the mongoose model if the user does not exist
+  const newUser = await User.create(userData)
+  return newUser
 }
 
 /**
@@ -18,9 +18,9 @@ export async function createUser(userData: IUser) {
  * @returns a promise that resolves to an array of IUser objects.
  */
 export async function getAllUsers(): Promise<IUser[]> {
-    // Get all users using the mongoose model
-    const users = await User.find();
-    return users;
+  // Get all users using the mongoose model
+  const users = await User.find();
+  return users;
 }
 
 /**
@@ -31,20 +31,20 @@ export async function getAllUsers(): Promise<IUser[]> {
  * @returns a Promise that resolves to either an IUser object or null.
  */
 export async function getUserById(
-    userId: string,
+  userId: string,
 ): Promise<IUser | null> {
-    // Convert the userId to number
-    const userIdNumber = Number(userId);
+  // Convert the userId to number
+  const userIdNumber = Number(userId);
 
-    // Check if the user exists with static method
-    const existingUser = await User.isUserExist(userIdNumber);
+  // Check if the user exists with static method
+  const existingUser = await User.isUserExist(userIdNumber);
 
-    if (!existingUser) {
-        throw new Error('User does not exist!');
-    } else {
-        const user = await User.findOne({ userId: userId }).select('-orders');
-        return user;
-    }
+  if (!existingUser) {
+    throw new Error('User does not exist!');
+  } else {
+    const user = await User.findOne({ userId: userId }).select('-orders');
+    return user;
+  }
 }
 
 /**
@@ -56,23 +56,45 @@ export async function getUserById(
  * @returns a Promise that resolves to either an IUser object or null.
  */
 export async function updateUser(
-    userId: string,
-    userData: IUser,
-  ): Promise<IUser | null> {
-    // Convert the userId to number
-    const userIdNumber = Number(userId);
-  
-    // Check if the user exists with static method
-    const existingUser = await User.isUserExist(userIdNumber);
-  
-    if (!existingUser) {
-      throw new Error('User does not exist!');
-    } else {
-      const updatedUser = await User.findOneAndUpdate(
-        { userId: userId },
-        userData,
-        { new: true },
-      );
-      return updatedUser;
-    }
+  userId: string,
+  userData: IUser,
+): Promise<IUser | null> {
+  // Convert the userId to number
+  const userIdNumber = Number(userId);
+
+  // Check if the user exists with static method
+  const existingUser = await User.isUserExist(userIdNumber);
+
+  if (!existingUser) {
+    throw new Error('User does not exist!');
+  } else {
+    const updatedUser = await User.findOneAndUpdate(
+      { userId: userId },
+      userData,
+      { new: true },
+    );
+    return updatedUser;
   }
+}
+
+/**
+ * The deleteUser function deletes a user with the specified userId and returns the deleted user if it
+ * exists.
+ * @param {string} userId - The `userId` parameter is a string that represents the unique identifier
+ * of the user to be deleted.
+ * @returns a Promise that resolves to either an IUser object or null.
+ */
+export async function deleteUser(userId: string): Promise<IUser | null> {
+  // Convert the userId to number
+  const userIdNumber = Number(userId);
+
+  // Check if the user exists with static method
+  const existingUser = await User.isUserExist(userIdNumber);
+
+  if (!existingUser) {
+    throw new Error('User does not exist!');
+  } else {
+    const deletedUser = await User.findOneAndDelete({ userId: userId });
+    return deletedUser;
+  }
+}
