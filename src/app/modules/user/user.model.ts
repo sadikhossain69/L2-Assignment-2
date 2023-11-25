@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import { IUser, TAddress, TFullName, TOrders } from "./user.interface";
+import bcrypt from "bcrypt"
+import config from "../../config";
 
 /* 
 The code `const userFullNameSchema: Schema<TFullName> = new Schema({ ... })` is defining a Mongoose
@@ -119,6 +121,22 @@ const userSchema: Schema<IUser> = new Schema({
         type: [userOrdersSchema]
     }
 
+})
+
+/* 
+The code `userSchema.pre<IUser>("save", async function(next) { ... })` is a pre-save middleware
+function in Mongoose. It is executed before saving a user document to the database. 
+*/
+userSchema.pre<IUser>("save", async function(next) {
+    const user = this
+
+    // making password hash
+    user.password = await bcrypt.hash(
+        user.password,
+        Number(config.bcrypt_salt_rounds)
+    )
+
+    next()
 })
 
 export const User = model<IUser>("User", userSchema)
