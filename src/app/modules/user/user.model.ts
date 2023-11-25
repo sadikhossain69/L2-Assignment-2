@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IUser, TAddress, TFullName, TOrders } from "./user.interface";
+import { IUser, TAddress, TFullName, TOrders, UserModel } from "./user.interface";
 import bcrypt from "bcrypt"
 import config from "../../config";
 
@@ -139,4 +139,4 @@ userSchema.pre<IUser>("save", async function(next) {
     next()
 })
 
-export const User = model<IUser>("User", userSchema)
+export const User = model<IUser, UserModel>("User", userSchema)
